@@ -18,7 +18,7 @@ This Hubot instance's role is the adapter to the chat platoform (e.g. Slack, MS 
 
 The steps to manually install this script is:
 
-- `npm i hubot-redis-backplane`
+- `npm i @hubot-friends/hubot-redis-backplane`
 - Add `hubot-redis-backplane/inbox.mjs` to your `external-scripts.json` file
 
     ```json
@@ -32,7 +32,7 @@ If you want to start from scratch:
 - `cd folder-to-have-mybot` Probably use a different folder name
 - `npx hubot --create myhubot --adapter @hubot-friends/hubot-discord` Pick your adapter. Just using Discord as an example here.
 - `cd myhubot`
-- `npm i hubot-friends/hubot-redis-backplane`
+- `npm i @hubot-friends/hubot-redis-backplane`
 - Add `hubot-redis-backplane/inbox.mjs` to your `external-scripts.json` file
 
     ```json
