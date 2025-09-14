@@ -32,7 +32,7 @@ If you want to start from scratch:
 - `cd folder-to-have-mybot` Probably use a different folder name
 - `npx hubot --create myhubot --adapter @hubot-friends/hubot-discord` Pick your adapter. Just using Discord as an example here.
 - `cd myhubot`
-- `npm i hubot-redis-backplane`
+- `npm i hubot-friends/hubot-redis-backplane`
 - Add `hubot-redis-backplane/inbox.mjs` to your `external-scripts.json` file
 
     ```json
@@ -43,13 +43,48 @@ If you want to start from scratch:
 
 Now when you start the Hubot Adapter instance as shown in the diagram above, incoming chat messages will be pushed into a Redis **inbox** stream, Hubot Redis Consumers get and process these messages, and responses are written back to an **outbox** Redis stream for delivery back to the chat. This lets you scale Hubot horizontally across processes or servers while keeping the UX seamless.
 
+Don't forget, you need a Redis server.
+
 # How do I start a Hubot consumer?
 
 My assumption is that this is a Git repo that contains all of your Hubot scripts (i.e. in a folder called scripts).
 
 ```sh
-HUBOT_REDIS_URL=redis://localhost:6378 HUBOT_CONSUMER_GROUP_NAME=hubot-group HUBOT_INBOX_STREAM_NAME=hubot-inbox HUBOT_OUTBOX_STREAM_NAME=hubot-outbox HUBOT_CONSUMER_NAME=hubot-consumer-1 npm start
+HUBOT_REDIS_URL=redis://localhost:6378 HUBOT_CONSUMER_GROUP_NAME=hubot-group HUBOT_INBOX_STREAM_NAME=hubot-inbox HUBOT_OUTBOX_STREAM_NAME=hubot-outbox HUBOT_CONSUMER_NAME=hubot-consumer-1 npm start -- --name ${NAME_OF_YOUR_HUBOT}
 ```
+
+`NAME_OF_YOUR_HUBOT` is the name you gave your Hubot instance that is connected to the chat app.
+
+Say you're building a Discord bot with Hubot. You have a start task in your `package.json` file like so:
+
+```json
+{
+    "scripts": {
+        "start": "hubot --adapter hubot-friends/hubot-discord"
+    }
+}
+```
+
+Starting the instance with: 
+
+```sh
+HUBOT_REDIS_URL=redis://localhost:6378 HUBOT_CONSUMER_GROUP_NAME=hubot-group HUBOT_INBOX_STREAM_NAME=hubot-inbox HUBOT_OUTBOX_STREAM_NAME=hubot-outbox HUBOT_CONSUMER_NAME=hubot-consumer-1 npm start -- --name ${NAME_OF_YOUR_HUBOT}
+```
+
+sets the name of your Hubot. So when you're on Discord and you want to send your Hubot a message, you'd do it like (where name is **mybot** in this example), `@mybot help`.
+
+You might have the name set in the start script like so:
+
+```json
+{
+    "scripts": {
+        "start": "hubot --adapter hubot-friends/hubot-discord --name mybot"
+    }
+}
+```
+
+In which case, you wouldn't need to include the `-- --name ${NAME_OF_YOUR_HUBOT}` becasue it's already set in the start task.
+
 
 # What are the required environment variables?
 
