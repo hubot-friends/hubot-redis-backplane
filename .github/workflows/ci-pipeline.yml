@@ -33,7 +33,7 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
     if: github.ref == 'refs/heads/main' && ${{ success() }}
     steps:
      - name: Checkout code
