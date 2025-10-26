@@ -46,6 +46,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node .github/scripts/release.mjs
+      - name: Check npm for current version
+        id: check_npm
+        if: ${{ steps.check_ci.outputs.result == 'true' && steps.check_codeql.outputs.result == 'true' }}
+        run: node .github/scripts/check-npm.mjs
       - name: Publish to npm
-        if: ${{ steps.check_ci.outputs.result == 'true' && steps.check_codeql.outputs.result == 'true' && steps.release.outputs.released == 'true' }}
+        if: ${{ steps.check_ci.outputs.result == 'true' && steps.check_codeql.outputs.result == 'true' && (steps.release.outputs.released == 'true' || steps.check_npm.outputs.exists == 'false') }}
         run: npm publish --provenance --access public
