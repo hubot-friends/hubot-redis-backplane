@@ -135,3 +135,8 @@ external-scripts.json
 .DS_Store
 configuration
 scripts
+
+# allow workflow helper scripts under .github/scripts
+!.github/
+!.github/scripts/
+!.github/scripts/**
