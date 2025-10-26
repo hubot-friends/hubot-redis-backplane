@@ -16,11 +16,6 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.sha }}
-      - name: Verify release scripts exist
-        run: |
-          ls -la .github/scripts || true
-          test -f .github/scripts/check-ci.mjs
-          test -f .github/scripts/release.mjs
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:

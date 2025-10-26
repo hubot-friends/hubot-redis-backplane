@@ -100,7 +100,10 @@ const writePackageJson = async (pkgPath, pkg) => {
 }
 
 const main = async () => {
+  const isDryRun = process.argv.includes('--dry-run') || ['1', 'true', 'yes'].includes(String(process.env.DRY_RUN || '').toLowerCase())
+
   await ensureGitUser()
+  await run('git fetch --tags --force')
 
   const lastTag = await getLastTag()
   if (!lastTag) {
@@ -132,12 +135,36 @@ const main = async () => {
   }
 
   const { pkgPath, pkg } = await readPackageJson()
-  const currentVersion = pkg.version || '0.0.0'
-  const newVersion = incVersion(currentVersion, bump)
+  const baseVersion = lastTag.replace(/^v/, '')
+  const newVersion = incVersion(baseVersion, bump)
   const newTag = `v${newVersion}`
 
   if (lastTag && lastTag.replace(/^v/, '') === newVersion) {
     console.log(`computed version ${newVersion} equals last tag ${lastTag} — nothing to do`)
+    if (process.env.GITHUB_OUTPUT) {
+      await fs.appendFile(process.env.GITHUB_OUTPUT, 'released=false\n')
+    }
+    return
+  }
+
+  // do not recreate an existing tag
+  const tagExists = (await run(`git tag -l ${newTag}`)).trim() === newTag
+  if (tagExists) {
+    console.log(`tag ${newTag} already exists — skipping`)
+    if (process.env.GITHUB_OUTPUT) {
+      await fs.appendFile(process.env.GITHUB_OUTPUT, 'released=false\n')
+    }
+    return
+  }
+
+  if (isDryRun) {
+    const currentPkgVersion = pkg.version || 'unknown'
+    console.log('[dry-run] last tag:', lastTag)
+    console.log('[dry-run] bump type:', bump)
+    console.log('[dry-run] package.json current version:', currentPkgVersion)
+    console.log('[dry-run] would set package.json version to:', newVersion)
+    console.log('[dry-run] would create tag:', newTag)
+    console.log('[dry-run] would commit with message:', `chore(release): v${newVersion} [skip ci]`)
     if (process.env.GITHUB_OUTPUT) {
       await fs.appendFile(process.env.GITHUB_OUTPUT, 'released=false\n')
     }
@@ -157,7 +184,7 @@ const main = async () => {
   await run(`git push origin ${branch}`)
   await run(`git push origin ${newTag}`)
 
-  console.log(`released ${newTag} and pushed changes`)
+  console.log(`released ${newTag} from base ${lastTag} and pushed changes`)
   if (process.env.GITHUB_OUTPUT) {
     await fs.appendFile(process.env.GITHUB_OUTPUT, 'released=true\n')
   }
