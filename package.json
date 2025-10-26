@@ -1,6 +1,6 @@
 {
   "name": "@hubot-friends/hubot-redis-backplane",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Distributed backplane for scaling Hubot with Redis Streams",
   "main": "index.mjs",
   "scripts": {
@@ -8,7 +8,14 @@
     "test": "node --test",
     "start:redis": "docker run --rm -p 6378:6379 -d --name hubot-redis -v $(pwd)/redis-data:/data redis redis-server --appendonly yes"
   },
-  "keywords": ["redis", "hubot", "scaling", "inbox", "outbox", "streams"],
+  "keywords": [
+    "redis",
+    "hubot",
+    "scaling",
+    "inbox",
+    "outbox",
+    "streams"
+  ],
   "author": "Joey Guerra <github@joeyguerra.com>",
   "license": "MIT",
   "type": "module",
@@ -22,7 +29,7 @@
     "RedisConsumerAdapter.mjs",
     "Outbox.mjs"
   ],
-    "release": {
+  "release": {
     "branches": [
       "main"
     ],
