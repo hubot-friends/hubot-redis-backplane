@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  id-token: write # Required for OIDC
   contents: write
   actions: read
 
@@ -47,6 +48,4 @@ jobs:
         run: node .github/scripts/release.mjs
       - name: Publish to npm
         if: ${{ steps.check_ci.outputs.result == 'true' && steps.check_codeql.outputs.result == 'true' && steps.release.outputs.released == 'true' }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public
+        run: npm publish --provenance --access public
