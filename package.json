@@ -1,6 +1,6 @@
 {
   "name": "@hubot-friends/hubot-redis-backplane",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Distributed backplane for scaling Hubot with Redis Streams",
   "main": "index.mjs",
   "scripts": {
