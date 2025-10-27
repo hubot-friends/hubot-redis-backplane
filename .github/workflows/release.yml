@@ -2,6 +2,11 @@ name: Manual Release
 
 on:
   workflow_dispatch:
+    inputs:
+      publish_only:
+        description: 'Skip tagging and just publish the current package.json version if missing on npm'
+        required: false
+        default: 'false'
 
 permissions:
   id-token: write # Required for OIDC
@@ -42,7 +47,7 @@ jobs:
         run: npm ci
       - name: Run release script
         id: release
-        if: ${{ steps.check_ci.outputs.result == 'true' && steps.check_codeql.outputs.result == 'true' }}
+        if: ${{ steps.check_ci.outputs.result == 'true' && steps.check_codeql.outputs.result == 'true' && inputs.publish_only != 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node .github/scripts/release.mjs
