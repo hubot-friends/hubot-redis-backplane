@@ -11,6 +11,10 @@
   "keywords": ["redis", "hubot", "scaling", "inbox", "outbox", "streams"],
   "author": "Joey Guerra <github@joeyguerra.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hubot-friends/hubot-redis-backplane"
+  },
   "type": "module",
   "dependencies": {
     "hubot": "^13.1.1",
