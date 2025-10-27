@@ -17,7 +17,7 @@
   },
   "type": "module",
   "dependencies": {
-    "hubot": "^13.1.1",
+    "hubot": "^13.1.4",
     "redis": "^5.8.2"
   },
   "files": [
